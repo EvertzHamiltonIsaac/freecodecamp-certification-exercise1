@@ -29,10 +29,12 @@ app.get('/api/:date?', function (req, res) {
   // Fecha tipo: 2025-11-01
   // Fecha tipo: 1761978438109
   // Fecha tipo: undefined
-
-  const strDate = new Date(typeof date === 'undefined' ? Date.now() : date);
+  const strDate = new Date(
+    typeof date === 'undefined' ? Date.now() : +date ? +date : date
+  );
   const unixDate = strDate.getTime();
   const utcDate = new Date(unixDate).toUTCString();
+
   console.log(
     `Standar Date: [${strDate}], Unix Date: [${unixDate}], UTC Date: [${utcDate}]`
   );
