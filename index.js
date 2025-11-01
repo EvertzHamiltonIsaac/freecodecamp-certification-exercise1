@@ -26,17 +26,20 @@ app.get('/', function (req, res) {
 app.get('/api/:date?', function (req, res) {
   const { date } = req.params;
   // console.log(Date.now());
+
+  const unixdate = typeof date == 'undefined' ? Date.now() : date;
+  const datehandler = new Date(date.includes('-') ? date : +date);
+
   const utcdate =
     typeof date == 'undefined'
       ? new Date(Date.now()).toUTCString()
-      : new Date(+date).toUTCString();
+      : new Date(datehandler.getTime()).toUTCString();
 
-  const unixdate = typeof date == 'undefined' ? Date.now() : date;
-
+  // console.log(typeof +unixdate);
   try {
     if (utcdate.includes('Invalid')) throw new Error();
     return res.json({
-      unix: +unixdate,
+      unix: datehandler.getTime(),
       utc: `${utcdate}`,
     });
   } catch (error) {
