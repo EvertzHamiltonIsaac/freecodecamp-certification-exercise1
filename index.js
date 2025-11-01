@@ -23,24 +23,35 @@ app.get('/', function (req, res) {
 //   res.json({ greeting: 'hello API' });
 // });
 
+function dateHandler(date) {
+  if (typeof date === 'undefined') return Date.now();
+  if (typeof date === 'string') {
+    if (date.includes('-')) {
+      return date;
+    } else {
+      return parseInt(date);
+    }
+  }
+}
+
 app.get('/api/:date?', function (req, res) {
   const { date } = req.params;
-  // console.log(Date.now());
+  //Posible valores del parametro:
+  // Fecha tipo: 2025-11-01
+  // Fecha tipo: 1761978438109
+  // Fecha tipo: undefined
 
-  const unixdate = typeof date == 'undefined' ? Date.now() : date;
-  const datehandler = new Date(date.includes('-') ? date : +date);
-
-  const utcdate =
-    typeof date == 'undefined'
-      ? new Date(Date.now()).toUTCString()
-      : new Date(datehandler.getTime()).toUTCString();
-
-  // console.log(typeof +unixdate);
+  const strDate = new Date(dateHandler(date));
+  const unixDate = strDate.getTime();
+  const utcDate = new Date(unixDate).toUTCString();
+  console.log(
+    `Standar Date: [${strDate}], Unix Date: [${unixDate}], UTC Date: [${utcDate}]`
+  );
   try {
-    if (utcdate.includes('Invalid')) throw new Error();
+    if (utcDate.includes('Invalid')) throw new Error();
     return res.json({
-      unix: datehandler.getTime(),
-      utc: `${utcdate}`,
+      unix: unixDate,
+      utc: `${utcDate}`,
     });
   } catch (error) {
     res.json({ error: 'Invalid Date' });
